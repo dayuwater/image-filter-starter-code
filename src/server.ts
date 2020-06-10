@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import { Router, Request, Response } from 'express';
 
 (async () => {
 
@@ -30,6 +31,38 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   /**************************************************************************** */
 
   //! END @TODO1
+
+  // https://timedotcom.files.wordpress.com/2019/03/kitten-report.jpg
+  // http://t7.baidu.com/it/u=378254553,3884800361&fm=79&app=86&f=JPEG?w=1280&h=2030
+  // https://timn-test-website-bucket.s3-us-west-2.amazonaws.com/img/van-336606_1280.jpg
+
+  app.get( "/filteredimage", async ( req:Request, res:Response ) => {
+    const imageUrl:string = req.query.image_url
+    if(!imageUrl){
+      res.status(400).send("You must enter a valid image url as query parameter")
+    }
+
+    try{
+      const url = new URL(imageUrl);
+    } 
+    catch(e){
+      res.status(400).send("Malformed url")
+    }
+
+    try{
+      const resultUrl:string = await filterImageFromURL(imageUrl)
+      res.sendFile(resultUrl, async err => {
+        await deleteLocalFiles([resultUrl])
+      })
+     
+    }
+    catch(e){
+      res.status(422).send("Your image cannot be processed")
+    }
+   
+    
+  } );
+
   
   // Root Endpoint
   // Displays a simple message to the user
