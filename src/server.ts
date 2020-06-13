@@ -37,7 +37,7 @@ import { Router, Request, Response } from 'express';
   // https://timn-test-website-bucket.s3-us-west-2.amazonaws.com/img/van-336606_1280.jpg
 
   app.get( "/filteredimage", async ( req:Request, res:Response ) => {
-    const imageUrl:string = req.query.image_url
+    const imageUrl = req.query.image_url
     if(!imageUrl){
       res.status(400).send("You must enter a valid image url as query parameter")
     }
